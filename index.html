@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0e27">
+    <meta name="description" content="AI Dragon vs Tiger Predictor - 90%+ accuracy">
+    <title>Dragon vs Tiger - AI Prediction</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Preload Inter only (smaller subset, no Orbitron blocking) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=Orbitron:wght@700;900&display=swap" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=Orbitron:wght@700;900&display=swap"></noscript>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="dragon-emoji">🐉</div>
+                <div class="vs-text">VS</div>
+                <div class="tiger-emoji">🐅</div>
+            </div>
+            <h1 class="splash-title">DRAGON vs TIGER</h1>
+            <p class="splash-subtitle">AI Prediction Engine</p>
+            <div class="loader"><div class="loader-bar"></div></div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app-container" style="visibility:hidden;">
+        <!-- Top Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="app-logo"><span class="logo-icon">🎯</span></div>
+                <div class="header-text">
+                    <h1>Predictor AI</h1>
+                    <p class="accuracy-badge"><span class="dot-pulse"></span><span id="liveAccuracy">90%+ Accuracy</span></p>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" id="soundToggle" title="Sound" aria-label="Sound">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="overlayToggle" title="Floating Overlay">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                        <rect x="8" y="8" width="8" height="8" rx="1"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="menuBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="predict">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Predict</span>
+            </button>
+            <button class="tab-btn" data-tab="train">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <span>Train</span>
+            </button>
+            <button class="tab-btn" data-tab="history">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+                <span>History</span>
+            </button>
+            <button class="tab-btn" data-tab="stats">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <span>Stats</span>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- PREDICT TAB -->
+            <section class="tab-content active" id="tab-predict">
+                <div class="card prediction-display-card">
+                    <div class="card-label">NEXT SIGNAL PREDICTION</div>
+                    <div class="prediction-result" id="predictionResult">
+                        <div class="prediction-placeholder">
+                            <div class="placeholder-icon">🎲</div>
+                            <p>Enter at least 3 signals to get AI prediction</p>
+                        </div>
+                    </div>
+                    <div class="confidence-meter" id="confidenceMeter" style="display:none;">
+                        <div class="confidence-label">
+                            <span>Confidence</span>
+                            <span id="confidenceValue">0%</span>
+                        </div>
+                        <div class="confidence-bar"><div class="confidence-fill" id="confidenceFill"></div></div>
+                        <div class="confidence-breakdown" id="confidenceBreakdown"></div>
+                    </div>
+                    <!-- Verify last prediction -->
+                    <div class="verify-row" id="verifyRow" style="display:none;">
+                        <span class="verify-label">Was the prediction right?</span>
+                        <div class="verify-btns">
+                            <button class="verify-btn win" data-verify="win">✓ Win</button>
+                            <button class="verify-btn loss" data-verify="loss">✗ Loss</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card input-card">
+                    <div class="card-header">
+                        <h2>Enter Previous Signals</h2>
+                        <span class="counter"><span id="signalCount">0</span>/10</span>
+                    </div>
+                    <div class="signal-slots" id="signalSlots"></div>
+                    <div class="signal-input-row">
+                        <button class="signal-btn dragon-btn" id="addDragon">
+                            <span class="signal-emoji">🐉</span>
+                            <span class="signal-label">DRAGON</span>
+                        </button>
+                        <button class="signal-btn tiger-btn" id="addTiger">
+                            <span class="signal-emoji">🐅</span>
+                            <span class="signal-label">TIGER</span>
+                        </button>
+                        <button class="signal-btn tie-btn" id="addTie">
+                            <span class="signal-emoji">🤝</span>
+                            <span class="signal-label">TIE</span>
+                        </button>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="undoBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+                            Undo
+                        </button>
+                        <button class="btn btn-secondary" id="clearBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+                            Clear
+                        </button>
+                        <button class="btn btn-primary" id="predictBtn" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            Predict
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card analytics-card">
+                    <h3>Pattern Analysis</h3>
+                    <div class="pattern-stats" id="patternStats">
+                        <div class="stat-item"><div class="stat-label">🐉 Dragon</div><div class="stat-value" id="dragonCount">0</div></div>
+                        <div class="stat-item"><div class="stat-label">🐅 Tiger</div><div class="stat-value" id="tigerCount">0</div></div>
+                        <div class="stat-item"><div class="stat-label">🤝 Tie</div><div class="stat-value" id="tieCount">0</div></div>
+                        <div class="stat-item"><div class="stat-label">🔥 Streak</div><div class="stat-value" id="streakCount">0</div></div>
+                    </div>
+                    <!-- Big Road (Baccarat-style) -->
+                    <div class="big-road-wrap">
+                        <h4 class="bigroad-title">🌊 Big Road</h4>
+                        <div class="big-road" id="bigRoad"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRAIN TAB -->
+            <section class="tab-content" id="tab-train">
+                <div class="card">
+                    <h2>Train Your Model</h2>
+                    <p class="card-desc">Add records via quick-tap, paste, or upload. The more data, the smarter the AI.</p>
+
+                    <!-- NEW: Quick manual entry -->
+                    <div class="quick-train">
+                        <h4>⚡ Quick Add (Tap to Train)</h4>
+                        <div class="quick-train-row">
+                            <button class="quick-btn d" data-q="D">🐉 D</button>
+                            <button class="quick-btn t" data-q="T">🐅 T</button>
+                            <button class="quick-btn tie" data-q="Tie">🤝 Tie</button>
+                        </div>
+                        <div class="quick-train-stats">
+                            <span>Added this session: <strong id="sessionAdded">0</strong></span>
+                            <button class="btn-text" id="undoLastTrain">Undo last</button>
+                        </div>
+                    </div>
+
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="fileInput" accept=".csv,.txt,.json" hidden>
+                        <div class="upload-icon">📤</div>
+                        <h3>Upload Records</h3>
+                        <p>Tap or drop file here</p>
+                        <p class="upload-formats">CSV • TXT • JSON</p>
+                    </div>
+
+                    <div class="manual-entry">
+                        <h4>Or Paste Records</h4>
+                        <textarea id="bulkInput" placeholder="Example:&#10;D,T,D,T,T,D,Tie,D,T,D&#10;or&#10;Dragon, Tiger, Dragon, Tie..." rows="5"></textarea>
+                        <button class="btn btn-primary full-width" id="bulkAddBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 5v14M5 12h14"/></svg>
+                            Add to Training Data
+                        </button>
+                    </div>
+
+                    <div class="training-info">
+                        <div class="info-row"><span>📊 Total Records</span><strong id="trainingCount">0</strong></div>
+                        <div class="info-row"><span>🎯 Model Accuracy</span><strong id="modelAccuracy">--</strong></div>
+                        <div class="info-row"><span>🧠 Last Trained</span><strong id="lastTrained">Never</strong></div>
+                    </div>
+
+                    <div class="train-actions">
+                        <button class="btn btn-gradient full-width" id="trainModelBtn">
+                            <span>🚀</span> Train Model Now
+                        </button>
+                        <div class="train-actions-row">
+                            <button class="btn btn-secondary" id="exportBtn">📥 Export</button>
+                            <button class="btn btn-secondary" id="clearTrainBtn">🗑️ Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HISTORY TAB -->
+            <section class="tab-content" id="tab-history">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Prediction History</h2>
+                        <button class="btn-text" id="clearHistoryBtn">Clear All</button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="empty-state"><div class="empty-icon">📭</div><p>No predictions yet</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STATS TAB -->
+            <section class="tab-content" id="tab-stats">
+                <div class="card stat-card-big">
+                    <div class="big-stat">
+                        <div class="big-stat-label">Overall Accuracy</div>
+                        <div class="big-stat-value" id="overallAccuracy">0%</div>
+                        <div class="big-stat-sub" id="totalPredictionsCount">0 total predictions</div>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="card mini-stat"><div class="mini-stat-icon">✅</div><div class="mini-stat-value" id="correctCount">0</div><div class="mini-stat-label">Correct</div></div>
+                    <div class="card mini-stat"><div class="mini-stat-icon">❌</div><div class="mini-stat-value" id="wrongCount">0</div><div class="mini-stat-label">Wrong</div></div>
+                    <div class="card mini-stat"><div class="mini-stat-icon">🐉</div><div class="mini-stat-value" id="dragonWins">0</div><div class="mini-stat-label">Dragon Hits</div></div>
+                    <div class="card mini-stat"><div class="mini-stat-icon">🐅</div><div class="mini-stat-value" id="tigerWins">0</div><div class="mini-stat-label">Tiger Hits</div></div>
+                </div>
+                <div class="card"><h3>Recent Performance</h3><div class="performance-chart" id="performanceChart"></div></div>
+                <div class="card"><button class="btn btn-secondary full-width" id="syncCloudBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+                    Sync to Cloud
+                </button></div>
+            </section>
+        </main>
+
+        <!-- Side Menu -->
+        <div class="side-menu" id="sideMenu">
+            <div class="side-menu-header">
+                <h2>Settings</h2>
+                <button class="icon-btn" id="closeMenu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div class="side-menu-content">
+                <div class="menu-section">
+                    <h4>Prediction Engine</h4>
+                    <div class="menu-item">
+                        <span>Algorithm Mode</span>
+                        <select id="algorithmMode">
+                            <option value="hybrid">Hybrid AI (Best)</option>
+                            <option value="markov">Markov Chain</option>
+                            <option value="pattern">Pattern Matching</option>
+                            <option value="streak">Streak Analysis</option>
+                        </select>
+                    </div>
+                    <div class="menu-item">
+                        <span>Min Confidence</span>
+                        <select id="minConfidence">
+                            <option value="70">70%</option>
+                            <option value="80">80%</option>
+                            <option value="90" selected>90%</option>
+                            <option value="95">95%</option>
+                        </select>
+                    </div>
+                    <div class="menu-item">
+                        <span>Auto-Predict</span>
+                        <label class="switch"><input type="checkbox" id="autoPredict"><span class="slider"></span></label>
+                    </div>
+                </div>
+
+                <div class="menu-section">
+                    <h4>Sound & Haptics</h4>
+                    <div class="menu-item">
+                        <span>Sound Effects</span>
+                        <label class="switch"><input type="checkbox" id="soundEnabled" checked><span class="slider"></span></label>
+                    </div>
+                    <div class="menu-item">
+                        <span>Sound Pack</span>
+                        <select id="soundPack">
+                            <option value="casino">🎰 Casino</option>
+                            <option value="arcade">🎮 Arcade</option>
+                            <option value="soft">🌙 Soft</option>
+                        </select>
+                    </div>
+                    <div class="menu-item">
+                        <span>Vibration</span>
+                        <label class="switch"><input type="checkbox" id="hapticsEnabled" checked><span class="slider"></span></label>
+                    </div>
+                </div>
+
+                <div class="menu-section">
+                    <h4>Appearance</h4>
+                    <div class="menu-item">
+                        <span>Theme</span>
+                        <select id="themeSelect">
+                            <option value="dark">🌌 Dark Blue</option>
+                            <option value="purple">💜 Royal Purple</option>
+                            <option value="emerald">💚 Emerald</option>
+                        </select>
+                    </div>
+                    <div class="menu-item">
+                        <span>Reduce Motion</span>
+                        <label class="switch"><input type="checkbox" id="reduceMotion"><span class="slider"></span></label>
+                    </div>
+                </div>
+
+                <div class="menu-section">
+                    <h4>Overlay</h4>
+                    <div class="menu-item"><span>Target Website URL</span></div>
+                    <input type="url" id="overlayUrl" placeholder="https://example.com" class="text-input">
+                    <button class="btn btn-primary full-width" id="openOverlayBtn" style="margin-top:10px;">🪟 Launch Floating Overlay</button>
+                </div>
+
+                <div class="menu-section">
+                    <h4>Account</h4>
+                    <div class="menu-item"><span>Status</span><strong id="authStatus">Connecting...</strong></div>
+                    <div class="menu-item"><span>User ID</span><strong id="userIdDisplay" class="user-id">--</strong></div>
+                </div>
+
+                <div class="menu-section">
+                    <h4>App Info</h4>
+                    <div class="menu-item"><span>Version</span><strong>2.0.0</strong></div>
+                    <div class="menu-item"><span>Engine</span><strong>AI v4 Turbo</strong></div>
+                </div>
+            </div>
+        </div>
+        <div class="menu-overlay" id="menuOverlay"></div>
+
+        <!-- Floating Overlay -->
+        <div class="floating-overlay" id="floatingOverlay" style="display:none;">
+            <div class="overlay-header" id="overlayHeader">
+                <div class="overlay-title"><span class="overlay-dot"></span>AI Predictor</div>
+                <div class="overlay-controls">
+                    <button class="overlay-btn" id="overlayMinimize" title="Minimize">_</button>
+                    <button class="overlay-btn" id="overlayExpand" title="Expand">⛶</button>
+                    <button class="overlay-btn" id="overlayClose" title="Close">×</button>
+                </div>
+            </div>
+            <div class="overlay-body" id="overlayBody">
+                <div class="overlay-prediction" id="overlayPrediction">
+                    <div class="overlay-emoji">🎯</div>
+                    <div class="overlay-result-text">Tap to Predict</div>
+                </div>
+                <div class="overlay-inputs">
+                    <button class="overlay-input-btn d" data-val="D">🐉</button>
+                    <button class="overlay-input-btn t" data-val="T">🐅</button>
+                    <button class="overlay-input-btn tie" data-val="Tie">🤝</button>
+                </div>
+                <div class="overlay-history" id="overlayHistory"></div>
+                <div class="overlay-actions">
+                    <button class="overlay-action-btn" id="overlayUndo">↶ Undo</button>
+                    <button class="overlay-action-btn primary" id="overlayPredict">⚡ Predict</button>
+                </div>
+                <iframe id="overlayIframe" style="display:none;"></iframe>
+            </div>
+            <div class="overlay-resize" id="overlayResize"></div>
+        </div>
+
+        <div class="floating-bubble" id="floatingBubble" style="display:none;"><span>🎯</span></div>
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <!-- Module Scripts (defer-loaded, parallel) -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/predictor.js"></script>
+    <script type="module" src="js/sound.js"></script>
+    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/overlay.js"></script>
+
+    <!-- Service Worker (register lazily, after first paint) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                requestIdleCallback ? requestIdleCallback(() => navigator.serviceWorker.register('service-worker.js').catch(()=>{}))
+                : setTimeout(() => navigator.serviceWorker.register('service-worker.js').catch(()=>{}), 800);
+            });
+        }
+    </script>
+</body>
+</html>
